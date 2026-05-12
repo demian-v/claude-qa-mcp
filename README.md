@@ -170,7 +170,3 @@ I'm Demian — Senior QA Engineer with 5+ years in e-commerce SaaS, test automat
 ## License
 
 [MIT](LICENSE) — use freely, no warranty.
-
-## Found this useful?
-
-LinkedIn post: [LINKEDIN_POST_URL] · Built by [Demian Vyrozub](https://github.com/demian-v)
