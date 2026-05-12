@@ -1,26 +1,41 @@
 # claude-qa-mcp
 
-**A Claude Code MCP config for QA engineers.** Drop the file in, fill in your TestRail credentials, and you're running with Miro, Atlassian (Jira + Confluence), TestRail, and Playwright in one shot. Figma walkthrough included below.
+<p align="center">
+  <img src="https://img.shields.io/badge/Claude_Code-000?style=flat&logo=anthropic&logoColor=white" alt="Claude Code">
+  <img src="https://img.shields.io/badge/MCP-Model_Context_Protocol-7C3AED?style=flat" alt="MCP">
+  <img src="https://img.shields.io/badge/Config-JSON-F7DF1E?style=flat&logo=json&logoColor=black" alt="JSON">
+  <img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="MIT">
+</p>
 
-> 𝟮-𝟯 𝗱𝗮𝘆𝘀 → 𝟱-𝟲 𝗵𝗼𝘂𝗿𝘀. That's the workflow this config came out of. Full story on LinkedIn: [LINKEDIN_POST_URL]
+<p align="center">
+  <em>Test documentation chases requirements across Miro, Jira, Confluence, Figma, and TestRail.</em><br>
+  <strong>This config wires Claude Code into all of them — 2-3 days of docs land in 5-6 hours.</strong>
+</p>
 
-## Quick start
+---
 
-```bash
-git clone https://github.com/demian-v/claude-qa-mcp
-cd claude-qa-mcp
-```
+## What Is This
 
-Then pick one of:
+`claude-qa-mcp` is a drop-in MCP server config for Claude Code, tailored for QA engineers. It connects the five tools where QA context lives — requirements, designs, tickets, test cases, automation — so Claude Code can read and write across all of them in a single session.
 
-- **Global**: merge the `mcpServers` block from `.mcp.json` into `~/.claude.json`
-- **Per-project**: copy `.mcp.json` into your project root
+What it does:
 
-Fill in the 3 TestRail placeholders, restart Claude Code, run `/mcp` to verify all 4 servers are listed.
+- **Wires up 4 MCPs in one file** — Miro, Atlassian (Jira + Confluence), TestRail, and Playwright
+- **Triggers browser OAuth on first use** for Miro and Atlassian — no API keys to manage
+- **Uses 3 env placeholders** for TestRail — URL, username, API key — that's it
+- **Walks you through Figma** separately via Claude AI's MCP catalog (the 5th MCP, not a drop-in)
+- **Includes example prompts** that exercise the full stack end-to-end
 
-## After install
+## What You Get
 
-Running `/mcp` inside Claude Code shows:
+| MCP | What it does for QA | Auth |
+|---|---|---|
+| **Miro** | Read flow diagrams, process maps | Browser OAuth on first use |
+| **Atlassian** (Jira + Confluence) | Pull tickets, specs, acceptance criteria | Browser OAuth on first use |
+| **TestRail** | Read / create / update test cases and sections | API key + URL + username (env vars) |
+| **Playwright** | Drive a real browser; draft test automation | None |
+
+After install, `/mcp` inside Claude Code shows:
 
 ```
 mcp servers
@@ -31,14 +46,29 @@ mcp servers
 └── figma         install separately — see below
 ```
 
-## What's in the file
+## Quick Start
 
-| MCP | What it does for QA | Auth |
-|---|---|---|
-| **Miro** | Read flow diagrams, process maps | Browser OAuth on first use |
-| **Atlassian** (Jira + Confluence) | Pull tickets, specs, acceptance criteria | Browser OAuth on first use |
-| **TestRail** | Read / create / update test cases and sections | API key + URL + username (env vars) |
-| **Playwright** | Drive a real browser; draft test automation | None |
+**1. Clone the repo**
+
+```bash
+git clone https://github.com/demian-v/claude-qa-mcp
+cd claude-qa-mcp
+```
+
+**2. Drop the config — pick one**
+
+- **Global**: merge the `mcpServers` block from `.mcp.json` into `~/.claude.json`
+- **Per-project**: copy `.mcp.json` into your project root
+
+**3. Fill in the TestRail placeholders** in your copy:
+
+```json
+"TESTRAIL_URL": "https://yourcompany.testrail.io",
+"TESTRAIL_USERNAME": "you@yourcompany.com",
+"TESTRAIL_API_KEY": "your-api-key-here"
+```
+
+**4. Restart Claude Code**, then run `/mcp` to confirm all 4 servers are listed.
 
 ## Figma (added separately)
 
@@ -51,7 +81,7 @@ Figma isn't in `.mcp.json` — there's no public HTTPS endpoint to drop in. Inst
 
 This adds Figma to Claude's hosted MCP layer — it works in Claude Code automatically alongside the servers in `.mcp.json`.
 
-## Common workflows
+## Common Workflows
 
 Prompts that exercise the full stack:
 
@@ -102,13 +132,7 @@ The official Atlassian Remote MCP works with Atlassian Cloud instances (`*.atlas
 
 </details>
 
-## What you get
-
-- Every requirement (Miro + Atlassian + Figma) in one AI session instead of four tabs
-- TestRail MCP writes drafts directly into the right section
-- Playwright automation drafts refined through manual review
-
-## Honest scope
+## Honest Scope
 
 - This file gets you 4 of 5 MCPs working. Figma needs the catalog step above.
 - AI alone won't write the test cases you need. The MCP layer plus project-specific context (skills, memory plugins, memory tools) is where the time savings come from. More on that layer in the LinkedIn series.
@@ -119,6 +143,29 @@ The official Atlassian Remote MCP works with Atlassian Cloud instances (`*.atlas
 - Never commit your filled-in `.mcp.json` to a public repo
 - Add `.mcp.json` to your project's `.gitignore` if you drop it into a project root
 - TestRail API keys carry the same blast radius as your account — create a dedicated key, not a personal one
+
+## Project Structure
+
+```
+claude-qa-mcp/
+├── .mcp.json     # 4 MCP servers — drop into ~/.claude.json or project root
+├── README.md     # this file
+├── .gitignore
+└── LICENSE       # MIT
+```
+
+## Tech Stack
+
+- **Agent**: Claude Code with MCP servers (`/mcp`)
+- **Config format**: JSON — mergeable into `~/.claude.json` or per-project `.mcp.json`
+- **Transports**: HTTP (Miro, Atlassian) + stdio (TestRail via `uvx`, Playwright via `npx`)
+- **Authentication**: Browser OAuth (Miro, Atlassian, Figma) + API key in env (TestRail)
+
+## About the Author
+
+I'm Demian — Senior QA Engineer with 5+ years in e-commerce SaaS, test automation, and AI-assisted workflows. I built this config from my own QA workflow and packaged the methodology so others can drop it in.
+
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/demian-vyrozub)
 
 ## License
 
