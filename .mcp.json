@@ -1,0 +1,27 @@
+{
+  "mcpServers": {
+    "miro": {
+      "type": "http",
+      "url": "https://mcp.miro.com"
+    },
+    "atlassian": {
+      "type": "http",
+      "url": "https://mcp.atlassian.com/v1/sse"
+    },
+    "testrail": {
+      "type": "stdio",
+      "command": "uvx",
+      "args": ["testrail-mcp"],
+      "env": {
+        "TESTRAIL_URL": "https://YOUR_INSTANCE.testrail.io",
+        "TESTRAIL_USERNAME": "you@example.com",
+        "TESTRAIL_API_KEY": "YOUR_TESTRAIL_API_KEY"
+      }
+    },
+    "playwright": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["@playwright/mcp@latest"]
+    }
+  }
+}
